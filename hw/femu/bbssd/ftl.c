@@ -1,5 +1,5 @@
 #include "ftl.h"
-
+#include "bplus_tree.h"
 //#define FEMU_DEBUG_FTL
 
 static void *ftl_thread(void *arg);
@@ -16,13 +16,16 @@ static inline bool should_gc_high(struct ssd *ssd)
 
 static inline struct ppa get_maptbl_ent(struct ssd *ssd, uint64_t lpn)
 {
-    return ssd->maptbl[lpn];
+    //return ssd->maptbl[lpn];
+    VALUE g = bplus_tree_search(ssd->maptbl, lpn); //****************************************
+    return (*g);
 }
 
 static inline void set_maptbl_ent(struct ssd *ssd, uint64_t lpn, struct ppa *ppa)
 {
     ftl_assert(lpn < ssd->sp.tt_pgs);
-    ssd->maptbl[lpn] = *ppa;
+    bplus_tree_insert(ssd->maptbl, lpn, ppa);    //*************************************
+    //ssd->maptbl[lpn] = *ppa;
 }
 
 static uint64_t ppa2pgidx(struct ssd *ssd, struct ppa *ppa)
@@ -343,11 +346,13 @@ static void ssd_init_ch(struct ssd_channel *ch, struct ssdparams *spp)
 static void ssd_init_maptbl(struct ssd *ssd)
 {
     struct ssdparams *spp = &ssd->sp;
-
-    ssd->maptbl = g_malloc0(sizeof(struct ppa) * spp->tt_pgs);
+    bplus_tree_create(&ssd->maptbl, spp->pgs_per_blk); // 修改处1**************************************
+    
+    /*ssd->maptbl = g_malloc0(sizeof(struct ppa) * spp->tt_pgs);
     for (int i = 0; i < spp->tt_pgs; i++) {
         ssd->maptbl[i].ppa = UNMAPPED_PPA;
-    }
+    }*/
+
 }
 
 static void ssd_init_rmap(struct ssd *ssd)

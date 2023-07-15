@@ -1,8 +1,11 @@
 #ifndef BPLUS_TREE_H
 #define BPLUS_TREE_H
 
-typedef int KEY;
-typedef int VALUE;
+#include "stdint.h"
+struct ppa;
+typedef uint64_t KEY;
+typedef struct ppa *VALUE;
+//typedef int VALUE;
 
 typedef struct bplus_node_s* bplus_node_pt;
 
@@ -25,7 +28,7 @@ typedef struct bplus_tree_s {
 
 int bplus_tree_create(bplus_tree_pt *_tree, int m);
 int bplus_tree_insert(bplus_tree_pt tree, KEY key, VALUE value);
-VALUE *bplus_tree_search(bplus_tree_pt tree, KEY key);
+VALUE bplus_tree_search(bplus_tree_pt tree, KEY key);
 void bplus_tree_delete(bplus_tree_pt tree, KEY key);
 void bplus_tree_destroy(bplus_tree_pt tree);
 void bplus_tree_print(bplus_tree_pt tree);

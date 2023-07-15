@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "bplus_tree.h"
+#include "ftl.h"
 
 /* 
  * a==b，返回0, a>b，返回正数，a<b 返回负数
  * 
  */
-#define item_cmp(a, b) ((a) - (b))
+#define item_cmp(a, b) \
+    (((a) == (b)) ? 0 : (((a) < (b)) ? -1 : 1))
 
 
 static bplus_node_pt bplus_node_new_leaf(int m);
@@ -23,8 +24,7 @@ static void _bplus_node_merge(bplus_node_pt node, int index);
 static void _bplus_tree_delete(bplus_tree_pt tree, bplus_node_pt node, int index);
 static void _bplus_node_destory(bplus_node_pt node);
 
-int 
-bplus_tree_create(bplus_tree_pt *_tree, int m)
+int bplus_tree_create(bplus_tree_pt *_tree, int m)
 {
     bplus_tree_pt tree = (bplus_tree_pt)malloc(sizeof(bplus_tree_t));
     if (tree == NULL) {
@@ -207,8 +207,7 @@ _bplus_tree_insert(bplus_tree_pt tree, bplus_node_pt node, KEY key, VALUE value)
     return 1;
 }
 
-int 
-bplus_tree_insert(bplus_tree_pt tree, KEY key, VALUE value)
+int bplus_tree_insert(bplus_tree_pt tree, KEY key, VALUE value)
 {
     bplus_node_pt node;
     int ret, index;
@@ -237,8 +236,7 @@ bplus_tree_insert(bplus_tree_pt tree, KEY key, VALUE value)
     return 1;
 }
 
-VALUE * 
-bplus_tree_search(bplus_tree_pt tree, KEY key)
+VALUE bplus_tree_search(bplus_tree_pt tree, KEY key)
 {
     bplus_node_pt node = tree->root;
     int ret = 0, index;
@@ -259,7 +257,7 @@ bplus_tree_search(bplus_tree_pt tree, KEY key)
         return NULL;
     }
 
-    return &node->data[index];
+    return node->data[index];
 }
 
 /* 
@@ -428,7 +426,7 @@ static void
 _bplus_tree_delete(bplus_tree_pt tree, bplus_node_pt node, int index)
 {
     bplus_node_pt parent, sibling;
-    int ret, i;
+    int i;
     /* 删除叶节点指定值 */
     for (i=index; i<node->keynum - 1; i++) {
         node->keys[i] = node->keys[i + 1];
@@ -505,7 +503,7 @@ _bplus_tree_delete(bplus_tree_pt tree, bplus_node_pt node, int index)
 void 
 bplus_tree_delete(bplus_tree_pt tree, KEY key)
 {
-    bplus_node_pt node = tree->root, node2;
+    bplus_node_pt node = tree->root;
     int ret = 0, index;
     if (node == NULL) {
         return;
@@ -572,7 +570,7 @@ bplus_node_printnode(KEY *key, int h)
         printf("*\n");
     }
     else {
-        printf("%d\n", *key);
+        printf("%ld\n", *key);
     }
 }
 
@@ -618,14 +616,14 @@ export_dot(FILE *fp, bplus_node_pt node, char *last_label, int field)
     if (node->child != NULL) {
         fprintf(fp, "<f0>");
         for (i=0; i<node->keynum; i++) {
-            fprintf(fp, " | %d", node->keys[i]);
+            fprintf(fp, " | %ld", node->keys[i]);
             fprintf(fp, " | <f%d>", i + 1);
         }
     }
     else {
-        fprintf(fp, "(%d, %d)", node->keys[0], node->data[0]);
+        fprintf(fp, "(%ld, %ld)", node->keys[0], node->data[0]->ppa);
         for (i=1; i<node->keynum; i++) {
-            fprintf(fp, " | (%d, %d)", node->keys[i], node->data[i]);
+            fprintf(fp, " | (%ld, %ld)", node->keys[i], node->data[i]->ppa);
         }
     }
     fprintf(fp, "\"];\n");

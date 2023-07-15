@@ -1,11 +1,14 @@
 #ifndef __FEMU_FTL_H
 #define __FEMU_FTL_H
-
 #include "../nvme.h"
 
 #define INVALID_PPA     (~(0ULL))
 #define INVALID_LPN     (~(0ULL))
 #define UNMAPPED_PPA    (~(0ULL))
+
+struct bplus_tree_s;
+typedef struct bplus_tree_s* bplus_tree_pt;
+
 
 enum {
     NAND_READ =  0,
@@ -198,7 +201,8 @@ struct ssd {
     char *ssdname;
     struct ssdparams sp;
     struct ssd_channel *ch;
-    struct ppa *maptbl; /* page level mapping table */
+    //struct ppa *maptbl; /* page level mapping table */
+    bplus_tree_pt maptbl; //*************************************************************************************
     uint64_t *rmap;     /* reverse mapptbl, assume it's stored in OOB */
     struct write_pointer wp;
     struct line_mgmt lm;
