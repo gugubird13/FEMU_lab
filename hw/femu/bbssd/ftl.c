@@ -18,7 +18,7 @@ static inline struct ppa get_maptbl_ent(struct ssd *ssd, uint64_t lpn)
 {
     //return ssd->maptbl[lpn];
     VALUE g = bplus_tree_search(ssd->maptbl, lpn); //****************************************
-    return (*g);
+    return *g;
 }
 
 static inline void set_maptbl_ent(struct ssd *ssd, uint64_t lpn, struct ppa *ppa)
@@ -774,6 +774,7 @@ static int do_gc(struct ssd *ssd, bool force)
 
 static uint64_t ssd_read(struct ssd *ssd, NvmeRequest *req)
 {
+    ftl_log("123445556667");
     struct ssdparams *spp = &ssd->sp;
     uint64_t lba = req->slba;
     int nsecs = req->nlb;
@@ -865,6 +866,7 @@ static uint64_t ssd_write(struct ssd *ssd, NvmeRequest *req)
 
 static void *ftl_thread(void *arg)
 {
+    ftl_log("123124323425");
     FemuCtrl *n = (FemuCtrl *)arg;
     struct ssd *ssd = n->ssd;
     NvmeRequest *req = NULL;
