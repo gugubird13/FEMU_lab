@@ -238,10 +238,12 @@ int bplus_tree_insert(bplus_tree_pt tree, KEY key, VALUE value)
 
 VALUE bplus_tree_search(bplus_tree_pt tree, KEY key)
 {
+    VALUE result;
     bplus_node_pt node = tree->root;
     int ret = 0, index;
     if (node == NULL) {
-        return NULL;
+        result.ppa = INVALID_PPA;
+        return result;
     }
 
     ret = binary_search(node->keys, key, 0, node->keynum - 1, &index);
@@ -254,7 +256,8 @@ VALUE bplus_tree_search(bplus_tree_pt tree, KEY key)
     }
 
     if (ret == 0) {
-        return NULL;
+        result.ppa = INVALID_PPA;
+        return result;
     }
 
     return node->data[index];
@@ -621,9 +624,9 @@ export_dot(FILE *fp, bplus_node_pt node, char *last_label, int field)
         }
     }
     else {
-        fprintf(fp, "(%ld, %ld)", node->keys[0], node->data[0]->ppa);
+        fprintf(fp, "(%ld, %ld)", node->keys[0], node->data[0].ppa);
         for (i=1; i<node->keynum; i++) {
-            fprintf(fp, " | (%ld, %ld)", node->keys[i], node->data[i]->ppa);
+            fprintf(fp, " | (%ld, %ld)", node->keys[i], node->data[i].ppa);
         }
     }
     fprintf(fp, "\"];\n");

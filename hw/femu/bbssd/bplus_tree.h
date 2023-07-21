@@ -4,7 +4,7 @@
 #include "stdint.h"
 struct ppa;
 typedef uint64_t KEY;
-typedef struct ppa *VALUE;
+typedef struct ppa VALUE;
 //typedef int VALUE;
 
 typedef struct bplus_node_s* bplus_node_pt;

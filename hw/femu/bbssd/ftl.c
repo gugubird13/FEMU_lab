@@ -18,13 +18,13 @@ static inline struct ppa get_maptbl_ent(struct ssd *ssd, uint64_t lpn)
 {
     //return ssd->maptbl[lpn];
     VALUE g = bplus_tree_search(ssd->maptbl, lpn); //****************************************
-    return *g;
+    return g;
 }
 
 static inline void set_maptbl_ent(struct ssd *ssd, uint64_t lpn, struct ppa *ppa)
 {
     ftl_assert(lpn < ssd->sp.tt_pgs);
-    bplus_tree_insert(ssd->maptbl, lpn, ppa);    //*************************************
+    bplus_tree_insert(ssd->maptbl, lpn, *ppa);    //*************************************
     //ssd->maptbl[lpn] = *ppa;
 }
 
