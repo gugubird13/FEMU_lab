@@ -229,7 +229,7 @@ int bplus_tree_insert(bplus_tree_pt tree, KEY key, VALUE value)
     }
     ret = binary_search(node->keys, key, 0, node->keynum - 1, &index);
     if (ret == 1) {
-        fprintf(stderr, "[%s][%d] The node is exist!\n", __FILE__, __LINE__);
+        // fprintf(stderr, "[%s][%d] The node is exist!\n", __FILE__, __LINE__);
         return 0;
     }
     _bplus_tree_insert(tree, node, key, value);
