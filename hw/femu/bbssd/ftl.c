@@ -346,7 +346,7 @@ static void ssd_init_ch(struct ssd_channel *ch, struct ssdparams *spp)
 static void ssd_init_maptbl(struct ssd *ssd)
 {
     struct ssdparams *spp = &ssd->sp;
-    bplus_tree_create(&ssd->maptbl, spp->pgs_per_blk/3); // 修改处1**************************************
+    bplus_tree_create(&ssd->maptbl, spp->pgs_per_blk); // 修改处1**************************************
     
     /*ssd->maptbl = g_malloc0(sizeof(struct ppa) * spp->tt_pgs);
     for (int i = 0; i < spp->tt_pgs; i++) {
@@ -844,8 +844,8 @@ static uint64_t ssd_write(struct ssd *ssd, NvmeRequest *req)
         /* update maptbl */
         set_maptbl_ent(ssd, lpn, &ppa);
         /* update rmap */
-        set_rmap_ent(ssd, lpn, &ppa);
 
+        set_rmap_ent(ssd, lpn, &ppa);
         mark_page_valid(ssd, &ppa);
 
         /* need to advance the write pointer here */

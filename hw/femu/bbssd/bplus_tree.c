@@ -230,9 +230,12 @@ int bplus_tree_insert(bplus_tree_pt tree, KEY key, VALUE value)
     ret = binary_search(node->keys, key, 0, node->keynum - 1, &index);
     if (ret == 1) {
         // fprintf(stderr, "[%s][%d] The node is exist!\n", __FILE__, __LINE__);
-        return 0;
+        // 既然找到了，那么这个时候无非就是先删除，再插入
+        node->data[index] = value;
     }
-    _bplus_tree_insert(tree, node, key, value);
+    else{
+        _bplus_tree_insert(tree, node, key, value);
+    }
     return 1;
 }
 
